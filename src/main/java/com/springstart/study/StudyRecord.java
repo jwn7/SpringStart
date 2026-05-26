@@ -39,13 +39,13 @@ public class StudyRecord {
         return completed;
     }
 
-    public void validateTitle(String title) {
-        if (title == null || title.isEmpty()) {
+    private void validateTitle(String title) {
+        if (title == null || title.isBlank()) {
             throw new IllegalArgumentException("Title cannot be null or empty");
         }
     }
 
-    public void validateStudyMinutes(int studyMinutes) {
+    private void validateStudyMinutes(int studyMinutes) {
         if (studyMinutes < 1) {
             throw new IllegalArgumentException("StudyMinutes cannot be less than 1");
         }
@@ -56,8 +56,9 @@ public class StudyRecord {
     }
 
     public void update(String title, String content, int studyMinutes) {
-        if (this.completed)
+        if (this.completed) {
             throw new IllegalStateException("This record is already completed");
+        }
         validateTitle(title);
         validateStudyMinutes(studyMinutes);
         this.title = title;
