@@ -3,6 +3,7 @@ build/
 target/
 out/
 .gradle/
+.gradle-user-home/
 
 # IDE
 .idea/
