@@ -1,10 +1,13 @@
 package com.springstart.study;
 
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
 public class StudyRecordApp {
     public static void main(String[] args)
     {
-        InMemoryStudyRecordRepository repository = new InMemoryStudyRecordRepository();
-        StudyRecordService service = new StudyRecordService(repository);
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+        StudyRecordService service = context.getBean(StudyRecordService.class);
+
         StudyRecord record = service.create(1L,"java OOP","service flow practice", 30);
         System.out.println("created id = " + record.getId());
         System.out.println("created title = " + record.getTitle());
@@ -39,6 +42,7 @@ public class StudyRecordApp {
         } catch (IllegalArgumentException e) {
             System.out.println("find after delete error = " + e.getMessage());
         }
+        context.close();
     }
 
 }

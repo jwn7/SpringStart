@@ -12,7 +12,7 @@ class StudyRecordServiceTest {
 
     @BeforeEach
     void setUp() {
-        InMemoryStudyRecordRepository repository = new InMemoryStudyRecordRepository();
+        StudyRecordRepository repository = new InMemoryStudyRecordRepository();
         service = new StudyRecordService(repository);
     }
     @Test

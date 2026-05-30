@@ -1,12 +1,18 @@
 package com.springstart.study;
 
+
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 
+
+@Service
 public class StudyRecordService {
 
-    private final InMemoryStudyRecordRepository repository;
+    private final StudyRecordRepository repository;
 
-    public StudyRecordService(InMemoryStudyRecordRepository repository) {
+    public StudyRecordService(@Qualifier("inMemoryStudyRecordRepository") StudyRecordRepository repository) {
         this.repository = repository;
     }
 

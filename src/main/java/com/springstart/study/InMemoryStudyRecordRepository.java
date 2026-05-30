@@ -1,12 +1,18 @@
 package com.springstart.study;
 
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Repository;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class InMemoryStudyRecordRepository {
+@Repository
+@Primary
+public class InMemoryStudyRecordRepository implements StudyRecordRepository
+{
     private final Map<Long, StudyRecord> store = new HashMap<>();
 
     public StudyRecord save(StudyRecord record) {
