@@ -6,10 +6,16 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 
 class AppConfigTest {
-
+    private AnnotationConfigApplicationContext devContext() {
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+        context.getEnvironment().setActiveProfiles("dev");
+        context.register(AppConfig.class);
+        context.refresh();
+        return context;
+    }
     @Test
     void contextLoads() {
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+        AnnotationConfigApplicationContext context = devContext();
         StudyRecordService service = context.getBean(StudyRecordService.class);
         StudyRecord studyRecord = service.create(1L, "Spring Bean", "config test", 30);
 
@@ -22,7 +28,7 @@ class AppConfigTest {
     @Test
     void singletonBeanTest()
     {
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+        AnnotationConfigApplicationContext context = devContext();
         StudyRecordService service = context.getBean(StudyRecordService.class);
         StudyRecordService service2 = context.getBean(StudyRecordService.class);
 
@@ -31,5 +37,17 @@ class AppConfigTest {
     }
 
 
+    @Test
+    void profileTest()
+    {
+        AnnotationConfigApplicationContext ac = devContext();
+
+        StudyRecordService service = ac.getBean(StudyRecordService.class);
+        StudyRecord studyRecord = service.create(1L, "Profile", "dev profile test", 30);
+
+        Assertions.assertNotNull(studyRecord);
+
+        ac.close();
+    }
 
 }

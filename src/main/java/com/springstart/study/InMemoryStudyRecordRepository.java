@@ -1,6 +1,7 @@
 package com.springstart.study;
 
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.Optional;
 
 @Repository
 @Primary
+@Profile("dev")
 public class InMemoryStudyRecordRepository implements StudyRecordRepository
 {
     private final Map<Long, StudyRecord> store = new HashMap<>();

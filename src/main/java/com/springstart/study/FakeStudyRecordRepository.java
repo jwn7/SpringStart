@@ -1,11 +1,13 @@
 package com.springstart.study;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
 @Repository
+@Profile("test")
 public class FakeStudyRecordRepository implements StudyRecordRepository {
     @Override
     public StudyRecord save(StudyRecord studyRecord) {
