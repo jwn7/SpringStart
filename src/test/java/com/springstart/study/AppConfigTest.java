@@ -3,7 +3,10 @@ package com.springstart.study;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.support.TestPropertySourceUtils;
+
+import java.io.IOException;
 
 
 class AppConfigTest {
@@ -61,6 +64,16 @@ class AppConfigTest {
 
         Assertions.assertNotNull(value);
         Assertions.assertEquals(30, studyRecord.getStudyMinutes());
+
+    }
+    @Test
+    void resourceTest() throws IOException {
+        ClassPathResource resource = new ClassPathResource("study-default.txt");
+
+        Assertions.assertTrue(resource.exists());
+        String content = new String(resource.getInputStream().readAllBytes());
+        Assertions.assertTrue(content.contains("default study minutes: 30"));
+
 
     }
 

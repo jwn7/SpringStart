@@ -1,6 +1,5 @@
 ﻿# Learning One-Liners
 
-이 파일은 GitHub에 올릴 공개용 학습 기록이다.
 ## 기록
 
 - 2026-05-18 -  객체를 생성할 때 잘못된 값이 들어올 경우 예외를 던져 객체가 불완전한 상태로 만들어지지 않게 한다.
@@ -10,5 +9,5 @@
 - 2026-05-28 - 인터페이스는 역할을 정하고, 구현체 선택은 조립하는 쪽이 결정한다.
 - 2026-05-30 - Spring Container는 Component Scan으로 Bean을 자동 등록하고, 여러 구현체가 있을 때 @Primary와 @Qualifier로 주입 대상을 선택한다.
 - 2026-06-01 - Profile은 실행환경에 맞는 Bean을 등록하게 해주며, active profile은 bean 생성 전에 설정해야 한다
-- 2026-06-01 - Enviorment property는 외부 설정값을 읽어 흐름을 연결할 수 있게 해준다.
-- 
+- 2026-06-01 - Environment property는 외부 설정값을 읽어 흐름을 연결할 수 있게 해준다.
+- 2026-06-01 - Resource는 classpath의 파일 같은 외부 자원을 공통 방식으로 읽게 해준다

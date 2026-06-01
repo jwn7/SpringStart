@@ -1,0 +1,1 @@
+default study minutes: 30
