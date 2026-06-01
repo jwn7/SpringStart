@@ -18,7 +18,9 @@ dependencies {
     testImplementation platform('org.junit:junit-bom:5.13.4')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'org.springframework:spring-test:7.0.7'
     implementation 'org.springframework:spring-context:7.0.7'
+
 }
 
 test {

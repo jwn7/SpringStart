@@ -3,11 +3,13 @@ package com.springstart.study;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.test.context.support.TestPropertySourceUtils;
 
 
 class AppConfigTest {
     private AnnotationConfigApplicationContext devContext() {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+        TestPropertySourceUtils.addInlinedPropertiesToEnvironment(context, "study.default-minutes=30");
         context.getEnvironment().setActiveProfiles("dev");
         context.register(AppConfig.class);
         context.refresh();
@@ -48,6 +50,18 @@ class AppConfigTest {
         Assertions.assertNotNull(studyRecord);
 
         ac.close();
+    }
+    @Test
+    void propertiesTest()
+    {
+        AnnotationConfigApplicationContext ac = devContext();
+        Integer value = ac.getEnvironment().getProperty("study.default-minutes", Integer.class);
+        StudyRecordService service = ac.getBean(StudyRecordService.class);
+        StudyRecord studyRecord = service.create(1L, "Profile", "dev profile test", value);
+
+        Assertions.assertNotNull(value);
+        Assertions.assertEquals(30, studyRecord.getStudyMinutes());
+
     }
 
 }
