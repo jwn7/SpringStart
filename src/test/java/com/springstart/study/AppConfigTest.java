@@ -7,6 +7,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.support.TestPropertySourceUtils;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 
 class AppConfigTest {
@@ -71,9 +72,10 @@ class AppConfigTest {
         ClassPathResource resource = new ClassPathResource("study-default.txt");
 
         Assertions.assertTrue(resource.exists());
-        String content = new String(resource.getInputStream().readAllBytes());
-        Assertions.assertTrue(content.contains("default study minutes: 30"));
-
+        try (InputStream inputStream = resource.getInputStream()) {
+            String content = new String(inputStream.readAllBytes());
+            Assertions.assertTrue(content.contains("default study minutes: 30"));
+        }
 
     }
 
