@@ -76,7 +76,15 @@ class AppConfigTest {
             String content = new String(inputStream.readAllBytes());
             Assertions.assertTrue(content.contains("default study minutes: 30"));
         }
+    }
 
+    @Test
+    void controllerBeanTest(){
+        AnnotationConfigApplicationContext ac = devContext();
+        StudyRecordController controller = ac.getBean(StudyRecordController.class);
+
+        Assertions.assertNotNull(controller);
+        ac.close();
     }
 
 }

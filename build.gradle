@@ -19,7 +19,12 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testImplementation 'org.springframework:spring-test:7.0.7'
+    testImplementation 'jakarta.servlet:jakarta.servlet-api:6.1.0'
+    testImplementation 'org.hamcrest:hamcrest:3.0'
+    testImplementation 'com.jayway.jsonpath:json-path:3.0.0'
     implementation 'org.springframework:spring-context:7.0.7'
+    implementation 'org.springframework:spring-webmvc:7.0.7'
+    implementation 'tools.jackson.core:jackson-databind:3.1.3'
 
 }
 
