@@ -39,7 +39,7 @@ public class StudyRecordApp {
 
         try {
             service.findById(1L);
-        } catch (IllegalArgumentException e) {
+        } catch (StudyRecordNotFoundException e) {
             System.out.println("find after delete error = " + e.getMessage());
         }
         context.close();

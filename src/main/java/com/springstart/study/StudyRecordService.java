@@ -23,7 +23,7 @@ public class StudyRecordService {
     }
 
     public StudyRecord findById(Long id) {
-        return repository.findById(id).orElseThrow(() -> new IllegalArgumentException("StudyRecord not found"));
+        return repository.findById(id).orElseThrow(() -> new StudyRecordNotFoundException("StudyRecord not found"));
 
     }
 

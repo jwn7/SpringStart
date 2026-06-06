@@ -16,6 +16,7 @@ logs/
 
 # Local learning records
 # Keep detailed tutoring logs, reviews, assessments, and private roadmap notes local-only.
+AGENTS.md
 docs/*.md
 docs/archive/
 !docs/learning-one-liners.md

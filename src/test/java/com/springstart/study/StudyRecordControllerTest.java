@@ -18,7 +18,9 @@ class StudyRecordControllerTest {
     StudyRecordService service = new StudyRecordService(repository);
     StudyRecordController controller = new StudyRecordController(service);
 
-    MockMvc mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+    MockMvc mockMvc = MockMvcBuilders.standaloneSetup(controller)
+            .setControllerAdvice(StudyRecordExceptionHandler.class)
+            .build();
 
     @Test
     void recordTest() throws Exception {
@@ -58,8 +60,7 @@ class StudyRecordControllerTest {
         mockMvc.perform(delete("/records/1"))
                 .andExpect(status().isNoContent());
 
-        Assertions.assertThrows(
-                IllegalArgumentException.class,
+        Assertions.assertThrows(StudyRecordNotFoundException.class,
                 () -> service.findById(1L)
         );
     }
@@ -86,7 +87,9 @@ class StudyRecordControllerTest {
     @Test
     void findByIdNotFoundTest() throws Exception {
 
-        mockMvc.perform(get("/records/999")).andExpect(status().isNotFound());
+        mockMvc.perform(get("/records/999")).andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.message").value("StudyRecord not found"));
     }
 
     @Test
@@ -108,8 +111,49 @@ class StudyRecordControllerTest {
                         }       
                         """
                 ))
-                .andExpect(status().isConflict());
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.status").value(409))
+                .andExpect(jsonPath("$.message").value("This record is already completed"));
+
         //then
 
     }
+
+    @Test
+    void createWithBlankTitleTest() throws Exception {
+        mockMvc.perform(post("/records").contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                    "id": 3,
+                                    "title": "",
+                                    "content": "bad request test",
+                                    "studyMinutes": 30
+                                }  
+                                """))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.message").value("Title cannot be null or empty"));
+    }
+
+    @Test
+    void createWithInvalidStudyMinutesTest() throws Exception {
+
+        mockMvc.perform(post("/records")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                    "id": 3,
+                                    "title": "bad request test",
+                                    "content": "bad request test",
+                                    "studyMinutes": 0
+                                }
+                                """))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.message").value("StudyMinutes cannot be less than 1"));
+    }
+
+
+
+
 }

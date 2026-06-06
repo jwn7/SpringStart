@@ -29,7 +29,7 @@ class StudyRecordServiceTest {
         StudyRecord record = service.create(1L, "Java Service", "service test", 40);
         service.delete(record.getId());
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> service.findById(record.getId()));
+        Assertions.assertThrows(StudyRecordNotFoundException.class, () -> service.findById(record.getId()));
     }
 
     @Test
