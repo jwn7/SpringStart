@@ -21,12 +21,12 @@ public class StudyRecordTest {
     @Test
     public void nullTitleTest()
     {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new StudyRecord(1L, "", "domain test", 30));
+        Assertions.assertThrows(StudyRecordValidationException.class, () -> new StudyRecord(1L, "", "domain test", 30));
     }
     @Test
     public void zeroStudyMinutesTest()
     {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new StudyRecord(1L, "ttt", "domain test", 0));
+        Assertions.assertThrows(StudyRecordValidationException.class, () -> new StudyRecord(1L, "ttt", "domain test", 0));
     }
     @Test
     public void completedRecordTest()

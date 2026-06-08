@@ -9,11 +9,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class StudyRecordExceptionHandler {
 
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<StudyRecordErrorResponse> handleIllegalArgumentException(IllegalArgumentException e) {
+    @ExceptionHandler(StudyRecordValidationException.class)
+    public ResponseEntity<StudyRecordErrorResponse> handleStudyRecordValidationException(StudyRecordValidationException e) {
 
-        StudyRecordErrorResponse studyRecordErrorResponse = new StudyRecordErrorResponse(HttpStatus.BAD_REQUEST.value(), e.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(studyRecordErrorResponse);
+        StudyRecordErrorCode errorCode = e.getErrorCode();
+        StudyRecordErrorResponse studyRecordErrorResponse = new StudyRecordErrorResponse(errorCode);
+        return ResponseEntity.status(errorCode.getHttpStatus()).body(studyRecordErrorResponse);
 
     }
 
@@ -26,9 +27,12 @@ public class StudyRecordExceptionHandler {
 
     @ExceptionHandler(StudyRecordNotFoundException.class)
     public ResponseEntity<StudyRecordErrorResponse> handleStudyRecordNotFoundException(StudyRecordNotFoundException e) {
-        StudyRecordErrorResponse studyRecordErrorResponse = new StudyRecordErrorResponse(HttpStatus.NOT_FOUND.value(), e.getMessage());
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(studyRecordErrorResponse);
+        StudyRecordErrorCode errorCode = e.getErrorCode();
+        StudyRecordErrorResponse studyRecordErrorResponse = new StudyRecordErrorResponse(errorCode);
+
+
+        return ResponseEntity.status(errorCode.getHttpStatus()).body(studyRecordErrorResponse);
 
     }
 }

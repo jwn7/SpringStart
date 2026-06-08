@@ -41,13 +41,13 @@ public class StudyRecord {
 
     private void validateTitle(String title) {
         if (title == null || title.isBlank()) {
-            throw new IllegalArgumentException("Title cannot be null or empty");
+            throw new StudyRecordValidationException(StudyRecordErrorCode.INVALID_TITLE);
         }
     }
 
     private void validateStudyMinutes(int studyMinutes) {
         if (studyMinutes < 1) {
-            throw new IllegalArgumentException("StudyMinutes cannot be less than 1");
+            throw new StudyRecordValidationException(StudyRecordErrorCode.INVALID_STUDY_MINUTES);
         }
     }
 
