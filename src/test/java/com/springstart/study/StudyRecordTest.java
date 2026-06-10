@@ -33,7 +33,7 @@ public class StudyRecordTest {
     {
         StudyRecord studyRecord = new StudyRecord(1L, "JAVA OOP", "domain test", 30);
         studyRecord.complete();
-        Assertions.assertThrows(IllegalStateException.class, () -> studyRecord.update("test","TEST",  312));
+        Assertions.assertThrows(StudyRecordAlreadyCompletedException.class, () -> studyRecord.update("test","TEST",  312));
 
     }
 }

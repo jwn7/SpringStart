@@ -57,7 +57,7 @@ public class StudyRecord {
 
     public void update(String title, String content, int studyMinutes) {
         if (this.completed) {
-            throw new IllegalStateException("This record is already completed");
+            throw new StudyRecordAlreadyCompletedException(StudyRecordErrorCode.STUDY_RECORD_ALREADY_COMPLETED);
         }
         validateTitle(title);
         validateStudyMinutes(studyMinutes);

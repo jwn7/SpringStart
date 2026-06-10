@@ -2,7 +2,7 @@ package com.springstart.study;
 
 public class StudyRecordValidationException extends RuntimeException {
 
-    private StudyRecordErrorCode errorCode;
+    private final StudyRecordErrorCode errorCode;
 
     public StudyRecordValidationException(StudyRecordErrorCode errorCode)
     {

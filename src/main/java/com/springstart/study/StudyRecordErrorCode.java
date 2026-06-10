@@ -9,7 +9,7 @@ public enum StudyRecordErrorCode {
     STUDY_RECORD_ALREADY_COMPLETED(HttpStatus.CONFLICT,"This record is already completed"),;
 
     private final HttpStatus httpStatus;
-    private String message;
+    private final String message;
 
     StudyRecordErrorCode(HttpStatus httpStatus, String message)
     {

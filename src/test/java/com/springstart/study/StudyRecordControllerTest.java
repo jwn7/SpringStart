@@ -93,7 +93,7 @@ class StudyRecordControllerTest {
     }
 
     @Test
-    void IllegalStateTest() throws Exception {
+    void completedRecordTest() throws Exception {
         //given
         StudyRecord record = service.create(1L, "Spring mvc", "mock mvc test", 30);
         record.complete();

@@ -1,6 +1,5 @@
 package com.springstart.study;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -18,11 +17,12 @@ public class StudyRecordExceptionHandler {
 
     }
 
-    @ExceptionHandler(IllegalStateException.class)
-    public ResponseEntity<StudyRecordErrorResponse> handleIllegalStateException(IllegalStateException e) {
+    @ExceptionHandler(StudyRecordAlreadyCompletedException.class)
+    public ResponseEntity<StudyRecordErrorResponse> handleStudyRecordAlreadyCompletedException(StudyRecordAlreadyCompletedException e) {
 
-        StudyRecordErrorResponse studyRecordErrorResponse = new StudyRecordErrorResponse(HttpStatus.CONFLICT.value(), e.getMessage());
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(studyRecordErrorResponse);
+        StudyRecordErrorCode errorCode = e.getErrorCode();
+        StudyRecordErrorResponse studyRecordErrorResponse = new StudyRecordErrorResponse(errorCode);
+        return ResponseEntity.status(errorCode.getHttpStatus()).body(studyRecordErrorResponse);
     }
 
     @ExceptionHandler(StudyRecordNotFoundException.class)

@@ -31,7 +31,7 @@ public class StudyRecordApp {
         try{
             service.update(1L,"After complete", "Shoud fail", 10);
         }
-        catch(IllegalStateException e)
+        catch(StudyRecordAlreadyCompletedException e)
         {
             System.out.println("update after complete error = " + e.getMessage());
         }

@@ -1,12 +1,12 @@
 package com.springstart.study;
 
-public class StudyRecordNotFoundException extends RuntimeException {
-
+public class StudyRecordAlreadyCompletedException extends RuntimeException {
 
     private final StudyRecordErrorCode errorCode;
 
-    public StudyRecordNotFoundException(StudyRecordErrorCode errorCode)
-    {
+
+    public StudyRecordAlreadyCompletedException(StudyRecordErrorCode errorCode) {
+
         super(errorCode.getMessage());
         this.errorCode = errorCode;
     }
@@ -14,6 +14,4 @@ public class StudyRecordNotFoundException extends RuntimeException {
     public StudyRecordErrorCode getErrorCode() {
         return errorCode;
     }
-
-
 }
