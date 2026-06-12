@@ -26,14 +26,24 @@ class StudyRecordControllerTest {
     void recordTest() throws Exception {
         service.create(1L, "Spring mvc", "mock mvc test", 30);
 
-        mockMvc.perform(get("/records")).andExpect(status().isOk()).andExpect(jsonPath("$[0].id").value(1)).andExpect(jsonPath("$[0].title").value("Spring mvc")).andExpect(jsonPath("$[0].studyMinutes").value(30));
+        mockMvc.perform(get("/records")).andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[0].title").value("Spring mvc"))
+                .andExpect(jsonPath("$[0].content").value("mock mvc test"))
+                .andExpect(jsonPath("$[0].studyMinutes").value(30))
+                .andExpect(jsonPath("$[0].completed").value(false));
     }
 
     @Test
     void findByIdTest() throws Exception {
         service.create(1L, "Spring mvc", "mock mvc test", 30);
 
-        mockMvc.perform(get("/records/1")).andExpect(status().isOk()).andExpect(jsonPath("$.id").value(1)).andExpect(jsonPath("$.title").value("Spring mvc")).andExpect(jsonPath("$.studyMinutes").value(30));
+        mockMvc.perform(get("/records/1")).andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.title").value("Spring mvc"))
+                .andExpect(jsonPath("$.content").value("mock mvc test"))
+                .andExpect(jsonPath("$.studyMinutes").value(30))
+                .andExpect(jsonPath("$.completed").value(false));
 
     }
 
@@ -50,7 +60,8 @@ class StudyRecordControllerTest {
                 .andExpect(jsonPath("$.id").value(2))
                 .andExpect(jsonPath("$.title").value("Post Mvc"))
                 .andExpect(jsonPath("$.content").value("post test"))
-                .andExpect(jsonPath("$.studyMinutes").value(45));
+                .andExpect(jsonPath("$.studyMinutes").value(45))
+                .andExpect(jsonPath("$.completed").value(false));
     }
 
     @Test
@@ -79,9 +90,11 @@ class StudyRecordControllerTest {
                                 }
                                 """))
                 .andExpect((status().isOk()))
+                .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.title").value("Updated MVC"))
                 .andExpect(jsonPath("$.content").value("update test"))
-                .andExpect(jsonPath("$.studyMinutes").value(60));
+                .andExpect(jsonPath("$.studyMinutes").value(60))
+                .andExpect(jsonPath("$.completed").value(false));
     }
 
     @Test
@@ -89,6 +102,7 @@ class StudyRecordControllerTest {
 
         mockMvc.perform(get("/records/999")).andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.errorCode").value("STUDY_RECORD_NOT_FOUND"))
                 .andExpect(jsonPath("$.message").value("StudyRecord not found"));
     }
 
@@ -113,6 +127,7 @@ class StudyRecordControllerTest {
                 ))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.status").value(409))
+                .andExpect(jsonPath("$.errorCode").value("STUDY_RECORD_ALREADY_COMPLETED"))
                 .andExpect(jsonPath("$.message").value("This record is already completed"));
 
         //then
@@ -132,6 +147,7 @@ class StudyRecordControllerTest {
                                 """))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.errorCode").value("INVALID_TITLE"))
                 .andExpect(jsonPath("$.message").value("Title cannot be null or empty"));
     }
 
@@ -150,6 +166,7 @@ class StudyRecordControllerTest {
                                 """))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.errorCode").value("INVALID_STUDY_MINUTES"))
                 .andExpect(jsonPath("$.message").value("StudyMinutes cannot be less than 1"));
     }
 

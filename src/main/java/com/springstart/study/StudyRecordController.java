@@ -18,24 +18,26 @@ public class StudyRecordController {
     }
 
     @GetMapping
-    public List<StudyRecord> findAll() {
-        return studyRecordService.findAll();
+    public List<StudyRecordResponse> findAll() {
+        return studyRecordService.findAll().stream()
+                .map(records -> new StudyRecordResponse(records)).toList();
     }
 
     @GetMapping("/{id}")
-    public StudyRecord findById(@PathVariable("id") Long id) {
-        return studyRecordService.findById(id);
+    public StudyRecordResponse findById(@PathVariable("id") Long id) {
+
+        return new StudyRecordResponse(studyRecordService.findById(id));
     }
 
     @PostMapping
-    public ResponseEntity<StudyRecord> create(@RequestBody CreateStudyRecordRequest request) {
+    public ResponseEntity<StudyRecordResponse> create(@RequestBody CreateStudyRecordRequest request) {
         StudyRecord record = studyRecordService.create(
                 request.getId(),
                 request.getTitle(),
                 request.getContent(),
                 request.getStudyMinutes()
         );
-        return ResponseEntity.status(HttpStatus.CREATED).body(record);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new StudyRecordResponse(record));
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable("id") Long id)
@@ -45,8 +47,8 @@ public class StudyRecordController {
     }
 
     @PutMapping("/{id}")
-    public StudyRecord update(@PathVariable("id") Long id, @RequestBody UpdateStudyRecordRequest request) {
-        return studyRecordService.update(id, request.getTitle(), request.getContent(), request.getStudyMinutes());
+    public StudyRecordResponse update(@PathVariable("id") Long id, @RequestBody UpdateStudyRecordRequest request) {
+        return new StudyRecordResponse(studyRecordService.update(id, request.getTitle(), request.getContent(), request.getStudyMinutes()));
     }
 
 }
