@@ -2,9 +2,9 @@ package com.springstart.study;
 
 public class StudyRecordErrorResponse {
 
-    private Integer status;
-    private String errorCode;
-    private String message;
+    private final Integer status;
+    private final String errorCode;
+    private final String message;
 
     public StudyRecordErrorResponse(StudyRecordErrorCode errorCode) {
         this.status = errorCode.getHttpStatus().value();
