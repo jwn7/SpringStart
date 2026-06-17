@@ -1,4 +1,4 @@
-package com.springstart.study;
+package com.springstart.study.config;
 
 
 import org.springframework.context.annotation.ComponentScan;

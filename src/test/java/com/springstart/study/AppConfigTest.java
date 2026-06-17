@@ -1,5 +1,9 @@
 package com.springstart.study;
 
+import com.springstart.study.config.AppConfig;
+import com.springstart.study.domain.StudyRecord;
+import com.springstart.study.service.StudyRecordService;
+import com.springstart.study.web.StudyRecordController;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;

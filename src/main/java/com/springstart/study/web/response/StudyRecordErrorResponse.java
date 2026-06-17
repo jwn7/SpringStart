@@ -1,4 +1,6 @@
-package com.springstart.study;
+package com.springstart.study.web.response;
+
+import com.springstart.study.exception.StudyRecordErrorCode;
 
 public class StudyRecordErrorResponse {
 

@@ -1,5 +1,8 @@
 package com.springstart.study;
 
+import com.springstart.study.domain.StudyRecord;
+import com.springstart.study.exception.StudyRecordAlreadyCompletedException;
+import com.springstart.study.exception.StudyRecordValidationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

@@ -1,4 +1,6 @@
-package com.springstart.study;
+package com.springstart.study.repository;
+
+import com.springstart.study.domain.StudyRecord;
 
 import java.util.List;
 import java.util.Optional;

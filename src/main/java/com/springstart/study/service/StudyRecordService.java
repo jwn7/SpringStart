@@ -1,6 +1,10 @@
-package com.springstart.study;
+package com.springstart.study.service;
 
 
+import com.springstart.study.domain.StudyRecord;
+import com.springstart.study.exception.StudyRecordErrorCode;
+import com.springstart.study.exception.StudyRecordNotFoundException;
+import com.springstart.study.repository.StudyRecordRepository;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 

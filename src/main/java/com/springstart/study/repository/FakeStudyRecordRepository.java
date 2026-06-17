@@ -1,4 +1,6 @@
-package com.springstart.study;
+package com.springstart.study.repository;
+
+import com.springstart.study.domain.StudyRecord;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;

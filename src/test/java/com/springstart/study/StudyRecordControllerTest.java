@@ -1,5 +1,12 @@
 package com.springstart.study;
 
+import com.springstart.study.domain.StudyRecord;
+import com.springstart.study.exception.StudyRecordExceptionHandler;
+import com.springstart.study.exception.StudyRecordNotFoundException;
+import com.springstart.study.repository.InMemoryStudyRecordRepository;
+import com.springstart.study.repository.StudyRecordRepository;
+import com.springstart.study.service.StudyRecordService;
+import com.springstart.study.web.StudyRecordController;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -147,8 +154,11 @@ class StudyRecordControllerTest {
                                 """))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.status").value(400))
-                .andExpect(jsonPath("$.errorCode").value("INVALID_TITLE"))
-                .andExpect(jsonPath("$.message").value("Title cannot be null or empty"));
+                .andExpect(jsonPath("$.errorCode").value("VALIDATION_FAILED"))
+                .andExpect(jsonPath("$.message").value("Request validation failed"))
+                .andExpect(jsonPath("$.errors[0].field").value("title"))
+                .andExpect(jsonPath("$.errors[0].errorCode").value("INVALID_TITLE"))
+                .andExpect(jsonPath("$.errors[0].message").value("Title cannot be null or empty"));
     }
 
     @Test
@@ -166,11 +176,50 @@ class StudyRecordControllerTest {
                                 """))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.status").value(400))
-                .andExpect(jsonPath("$.errorCode").value("INVALID_STUDY_MINUTES"))
-                .andExpect(jsonPath("$.message").value("StudyMinutes cannot be less than 1"));
+                .andExpect(jsonPath("$.errorCode").value("VALIDATION_FAILED"))
+                .andExpect(jsonPath("$.message").value("Request validation failed"))
+                .andExpect(jsonPath("$.errors[0].field").value("studyMinutes"))
+                .andExpect(jsonPath("$.errors[0].errorCode").value("INVALID_STUDY_MINUTES"))
+                .andExpect(jsonPath("$.errors[0].message").value("StudyMinutes cannot be less than 1"));
     }
 
+    @Test
+    void multipleInvalidTest() throws Exception {
 
+        mockMvc.perform(post("/records")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                                {
+                                    "id": 3,
+                                    "title": "",
+                                    "content": "bad request test",
+                                    "studyMinutes": 0
+                                }
+                                """))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.errorCode").value("VALIDATION_FAILED"))
+                .andExpect(jsonPath("$.message").value("Request validation failed"))
+                .andExpect(jsonPath("$.errors.length()").value(2));
+    }
 
+    @Test
+    void invalidRequestTest() throws Exception {
+
+        mockMvc.perform(post("/records")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                    "id": 3,
+                                    "title": "title",
+                                    "content": "bad request test",
+                                    "studyMinutes": "abc"
+                                }
+                                """))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.errorCode").value("INVALID_REQUEST"))
+                .andExpect(jsonPath("$.message").value("Invalid Request body"));
+    }
 
 }

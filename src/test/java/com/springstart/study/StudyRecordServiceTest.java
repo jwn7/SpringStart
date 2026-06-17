@@ -1,5 +1,10 @@
 package com.springstart.study;
 
+import com.springstart.study.domain.StudyRecord;
+import com.springstart.study.exception.StudyRecordNotFoundException;
+import com.springstart.study.repository.InMemoryStudyRecordRepository;
+import com.springstart.study.repository.StudyRecordRepository;
+import com.springstart.study.service.StudyRecordService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

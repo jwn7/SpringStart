@@ -1,5 +1,10 @@
 package com.springstart.study;
 
+import com.springstart.study.config.AppConfig;
+import com.springstart.study.domain.StudyRecord;
+import com.springstart.study.exception.StudyRecordAlreadyCompletedException;
+import com.springstart.study.exception.StudyRecordNotFoundException;
+import com.springstart.study.service.StudyRecordService;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 public class StudyRecordApp {

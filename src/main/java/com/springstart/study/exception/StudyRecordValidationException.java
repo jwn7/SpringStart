@@ -1,4 +1,4 @@
-package com.springstart.study;
+package com.springstart.study.exception;
 
 public class StudyRecordValidationException extends RuntimeException {
 

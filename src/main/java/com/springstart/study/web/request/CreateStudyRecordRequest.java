@@ -1,4 +1,4 @@
-package com.springstart.study;
+package com.springstart.study.web.request;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;

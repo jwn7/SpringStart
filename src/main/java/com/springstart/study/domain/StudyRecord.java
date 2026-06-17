@@ -1,4 +1,8 @@
-package com.springstart.study;
+package com.springstart.study.domain;
+
+import com.springstart.study.exception.StudyRecordAlreadyCompletedException;
+import com.springstart.study.exception.StudyRecordErrorCode;
+import com.springstart.study.exception.StudyRecordValidationException;
 
 public class StudyRecord {
     private Long id;

@@ -1,5 +1,10 @@
-package com.springstart.study;
+package com.springstart.study.web;
 
+import com.springstart.study.domain.StudyRecord;
+import com.springstart.study.service.StudyRecordService;
+import com.springstart.study.web.request.CreateStudyRecordRequest;
+import com.springstart.study.web.request.UpdateStudyRecordRequest;
+import com.springstart.study.web.response.StudyRecordResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
