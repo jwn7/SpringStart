@@ -34,11 +34,16 @@ class StudyRecordControllerTest {
         service.create(1L, "Spring mvc", "mock mvc test", 30);
 
         mockMvc.perform(get("/records")).andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(1))
-                .andExpect(jsonPath("$[0].title").value("Spring mvc"))
-                .andExpect(jsonPath("$[0].content").value("mock mvc test"))
-                .andExpect(jsonPath("$[0].studyMinutes").value(30))
-                .andExpect(jsonPath("$[0].completed").value(false));
+                .andExpect(jsonPath("$.contents[0].id").value(1))
+                .andExpect(jsonPath("$.contents[0].title").value("Spring mvc"))
+                .andExpect(jsonPath("$.contents[0].content").value("mock mvc test"))
+                .andExpect(jsonPath("$.contents[0].studyMinutes").value(30))
+                .andExpect(jsonPath("$.contents[0].completed").value(false))
+                .andExpect(jsonPath("$.page").value(0))
+                .andExpect(jsonPath("$.size").value(10))
+                .andExpect(jsonPath("$.totalElements").value(1))
+                .andExpect(jsonPath("$.totalPages").value(1))
+                .andExpect(jsonPath("$.hasNext").value(false));
     }
 
     @Test
@@ -222,4 +227,21 @@ class StudyRecordControllerTest {
                 .andExpect(jsonPath("$.message").value("Invalid Request body"));
     }
 
+    @Test
+    void invalidRangeTest() throws Exception {
+
+        service.create(1L, "Spring mvc", "mock mvc test", 30);
+
+        mockMvc.perform(get("/records?page=2&size=10"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.contents.length()").value(0))
+                .andExpect(jsonPath("$.page").value(2))
+                .andExpect(jsonPath("$.size").value(10))
+                .andExpect(jsonPath("$.totalElements").value(1))
+                .andExpect(jsonPath("$.totalPages").value(1))
+                .andExpect(jsonPath("$.hasNext").value(false));
+
+    }
+
 }
+
