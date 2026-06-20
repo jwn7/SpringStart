@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -240,8 +241,36 @@ class StudyRecordControllerTest {
                 .andExpect(jsonPath("$.totalElements").value(1))
                 .andExpect(jsonPath("$.totalPages").value(1))
                 .andExpect(jsonPath("$.hasNext").value(false));
+    }
+
+    @Test
+    void paginationTest() throws Exception {
+
+        service.create(1L, "Spring mvc", "mock mvc test", 30);
+        service.create(2L, "Spring mvc", "mock mvc test", 30);
+        service.create(3L, "Spring mvc", "mock mvc test", 30);
+        service.create(4L, "Spring mvc", "mock mvc test", 30);
+        service.create(5L, "Spring mvc", "mock mvc test", 30);
+
+        mockMvc.perform(get("/records?page=1&size=2"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.contents.length()").value(2))
+                .andExpect(jsonPath("$.contents[0].id").value(3))
+                .andExpect(jsonPath("$.contents[1].id").value(2))
+                .andExpect(jsonPath("$.page").value(1))
+                .andExpect(jsonPath("$.size").value(2))
+                .andExpect(jsonPath("$.totalElements").value(5))
+                .andExpect(jsonPath("$.totalPages").value(3))
+                .andExpect(jsonPath("$.hasNext").value(true));
+
 
     }
 
+    @Test
+    void negativePageTest() throws Exception {
+
+        mockMvc.perform(get("/records?page=-1&size=2"))
+                .andExpect(status().isBadRequest());
+    }
 }
 

@@ -7,6 +7,7 @@ import com.springstart.study.web.request.UpdateStudyRecordRequest;
 import com.springstart.study.web.response.StudyRecordPageResponse;
 import com.springstart.study.web.response.StudyRecordResponse;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,7 @@ public class StudyRecordController {
         this.studyRecordService = studyRecordService;
     }
     @GetMapping
-    public StudyRecordPageResponse findAll(@RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size) {
+    public StudyRecordPageResponse findAll(@RequestParam(name = "page", defaultValue = "0") @Min(0) int page, @RequestParam(name = "size", defaultValue = "10") int size) {
 
         List<StudyRecordResponse> contents = studyRecordService.findAll().stream()
                 .sorted(Comparator.comparing(StudyRecord::getId).reversed())
