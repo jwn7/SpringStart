@@ -272,5 +272,17 @@ class StudyRecordControllerTest {
         mockMvc.perform(get("/records?page=-1&size=2"))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    void zeroSizeTest() throws Exception
+    {
+        mockMvc.perform(get("/records?page=1&size=0"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test void maxSizeTest() throws Exception{
+        mockMvc.perform(get("/records?page=1&size=101"))
+                .andExpect(status().isBadRequest());
+    }
 }
 
