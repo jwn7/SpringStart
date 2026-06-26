@@ -8,7 +8,10 @@ public enum StudyRecordErrorCode {
     INVALID_STUDY_MINUTES(HttpStatus.BAD_REQUEST,"StudyMinutes cannot be less than 1"),
     STUDY_RECORD_NOT_FOUND(HttpStatus.NOT_FOUND,"StudyRecord not found"),
     STUDY_RECORD_ALREADY_COMPLETED(HttpStatus.CONFLICT,"This record is already completed"),
-    INVALID_REQUEST(HttpStatus.BAD_REQUEST, "Invalid Request body");
+    INVALID_REQUEST(HttpStatus.BAD_REQUEST, "Invalid Request body"),
+    INVALID_PAGE(HttpStatus.BAD_REQUEST, "Page cannot be less than 0"),
+    INVALID_PAGE_SIZE(HttpStatus.BAD_REQUEST, "Size must be between 1 and 100"),
+    INVALID_REQUEST_PARAMETER(HttpStatus.BAD_REQUEST, "Invalid request parameter");
 
     private final HttpStatus httpStatus;
     private final String message;

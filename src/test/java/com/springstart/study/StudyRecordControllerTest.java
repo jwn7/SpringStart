@@ -14,7 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 
-
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -270,19 +270,65 @@ class StudyRecordControllerTest {
     void negativePageTest() throws Exception {
 
         mockMvc.perform(get("/records?page=-1&size=2"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorCode").value("VALIDATION_FAILED"))
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.message").value("Request validation failed"))
+                .andExpect(jsonPath("$.errors[0].field").value("page"))
+                .andExpect(jsonPath("$.errors[0].errorCode").value("INVALID_PAGE"))
+                .andExpect(jsonPath("$.errors[0].message").value("Page cannot be less than 0"));
     }
 
     @Test
     void zeroSizeTest() throws Exception
     {
         mockMvc.perform(get("/records?page=1&size=0"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors[0].field").value("size"))
+                .andExpect(jsonPath("$.errors[0].errorCode").value("INVALID_PAGE_SIZE"))
+                .andExpect(jsonPath("$.errors[0].message").value("Size must be between 1 and 100"));
     }
 
     @Test void maxSizeTest() throws Exception{
         mockMvc.perform(get("/records?page=1&size=101"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors[0].field").value("size"))
+                .andExpect(jsonPath("$.errors[0].errorCode").value("INVALID_PAGE_SIZE"))
+                .andExpect(jsonPath("$.errors[0].message").value("Size must be between 1 and 100"));
+    }
+
+    @Test
+    void validSizeTest() throws Exception {
+        mockMvc.perform(get("/records?page=0&size=100"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size").value(100));
+    }
+
+    @Test
+    void multipleInvalidPaginationTest() throws Exception {
+        mockMvc.perform(get("/records?page=-1&size=0"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors.length()").value(2))
+                .andExpect(jsonPath("$.errors[*].field").value(containsInAnyOrder("page","size")))
+                .andExpect(jsonPath("$.errors[*].errorCode").value(containsInAnyOrder("INVALID_PAGE", "INVALID_PAGE_SIZE")));
+    }
+
+    @Test
+    void invalidRequestSizeTest() throws Exception {
+        mockMvc.perform(get("/records?page=1&size=abc"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.errorCode").value("INVALID_REQUEST_PARAMETER"))
+                .andExpect(jsonPath("$.message").value("Invalid request parameter"));
+    }
+
+    @Test
+    void invalidRequestPageTest() throws Exception {
+        mockMvc.perform(get("/records?page=abc&size=10"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.errorCode").value("INVALID_REQUEST_PARAMETER"))
+                .andExpect(jsonPath("$.message").value("Invalid request parameter"));
     }
 }
 
