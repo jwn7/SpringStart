@@ -3,6 +3,8 @@ package com.springstart.study.repository;
 import com.springstart.study.domain.StudyRecord;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,6 +14,20 @@ public class JdbcStudyRecordRepository implements StudyRecordRepository {
 
     public JdbcStudyRecordRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+    }
+
+    private StudyRecord mapToStudyRecord(ResultSet rs, int rowNum) throws SQLException {
+        long recordId = rs.getLong("id");
+        String title = rs.getString("title");
+        String content = rs.getString("content");
+        int studyMinutes = rs.getInt("study_minutes");
+        boolean completed = rs.getBoolean("completed");
+        StudyRecord record = new StudyRecord(recordId, title, content, studyMinutes);
+
+        if(completed){
+            record.complete();
+        }
+        return record;
     }
 
     @Override
@@ -27,20 +43,7 @@ public class JdbcStudyRecordRepository implements StudyRecordRepository {
 
     @Override
     public Optional<StudyRecord> findById(Long id) {
-        List<StudyRecord> records = jdbcTemplate.query("SELECT * FROM study_records WHERE id = ?",
-                (rs, rowNum) -> {
-                    long recordId = rs.getLong("id");
-                    String title = rs.getString("title");
-                    String content = rs.getString("content");
-                    int studyMinutes = rs.getInt("study_minutes");
-                    boolean completed = rs.getBoolean("completed");
-                    StudyRecord record = new StudyRecord(recordId, title, content, studyMinutes);
-
-                    if(completed){
-                        record.complete();
-                    }
-                    return record;
-                }, id);
+        List<StudyRecord> records = jdbcTemplate.query("SELECT * FROM study_records WHERE id = ?",this::mapToStudyRecord,id);
 
         if(records.isEmpty())
             return Optional.empty();
@@ -49,19 +52,7 @@ public class JdbcStudyRecordRepository implements StudyRecordRepository {
 
     @Override
     public List<StudyRecord> findAll() {
-        List<StudyRecord> list = jdbcTemplate.query("SELECT * FROM study_records ORDER BY id",
-                (rs, rowNum) -> {
-                long recordId = rs.getLong("id");
-                String title = rs.getString("title");
-                String content = rs.getString("content");
-                int studyMinutes = rs.getInt("study_minutes");
-                boolean completed = rs.getBoolean("completed");
-                StudyRecord record = new StudyRecord(recordId, title, content, studyMinutes);
-                if(completed){
-                    record.complete();
-                }
-                return record;
-                });
+        List<StudyRecord> list = jdbcTemplate.query("SELECT * FROM study_records ORDER BY id",this::mapToStudyRecord);
         return list;
     }
 

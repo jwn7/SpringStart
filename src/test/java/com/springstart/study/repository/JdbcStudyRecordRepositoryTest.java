@@ -10,8 +10,6 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 
 class JdbcStudyRecordRepositoryTest {
 
@@ -119,3 +117,4 @@ class JdbcStudyRecordRepositoryTest {
         Assertions.assertEquals(0, jdbcStudyRecordRepository.findAll().size());
     }
 }
+
