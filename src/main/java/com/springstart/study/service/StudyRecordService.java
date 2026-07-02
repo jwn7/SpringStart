@@ -6,6 +6,7 @@ import com.springstart.study.exception.StudyRecordErrorCode;
 import com.springstart.study.exception.StudyRecordNotFoundException;
 import com.springstart.study.repository.StudyRecordRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -51,4 +52,11 @@ public class StudyRecordService {
         repository.deleteById(id);
     }
 
+    @Transactional
+    public void createThenThrow(Long id, String title, String content, int studyMinutes) {
+        StudyRecord record = new StudyRecord(id, title, content, studyMinutes);
+        repository.save(record);
+
+        throw new RuntimeException("rollback test");
+    }
 }
