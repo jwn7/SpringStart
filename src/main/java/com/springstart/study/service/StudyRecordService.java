@@ -59,4 +59,12 @@ public class StudyRecordService {
 
         throw new RuntimeException("rollback test");
     }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void createThenThrowChecked(Long id, String title, String content, int studyMinutes) throws Exception {
+        StudyRecord record = new StudyRecord(id, title, content, studyMinutes);
+        repository.save(record);
+
+        throw new Exception("rollback test");
+    }
 }
