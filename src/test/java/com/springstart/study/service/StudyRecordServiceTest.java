@@ -13,11 +13,10 @@ import java.util.List;
 class StudyRecordServiceTest {
 
     private StudyRecordService service;
-
     @BeforeEach
     void setUp() {
         StudyRecordRepository repository = new InMemoryStudyRecordRepository();
-        service = new StudyRecordService(repository);
+        service = new StudyRecordService(repository );
     }
     @Test
     void createAndFindByIdTest()
