@@ -1,16 +1,11 @@
 package com.springstart.study.repository;
 
 import com.springstart.study.domain.StudyRecord;
-
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Repository
 @Primary

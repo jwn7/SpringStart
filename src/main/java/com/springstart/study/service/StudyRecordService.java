@@ -5,7 +5,6 @@ import com.springstart.study.domain.StudyRecord;
 import com.springstart.study.exception.StudyRecordErrorCode;
 import com.springstart.study.exception.StudyRecordNotFoundException;
 import com.springstart.study.repository.StudyRecordRepository;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,7 +15,7 @@ public class StudyRecordService {
 
     private final StudyRecordRepository repository;
 
-    public StudyRecordService(@Qualifier("inMemoryStudyRecordRepository") StudyRecordRepository repository) {
+    public StudyRecordService(StudyRecordRepository repository) {
         this.repository = repository;
     }
 

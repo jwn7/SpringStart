@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
+
 public class JdbcStudyRecordRepository implements StudyRecordRepository {
 
     private final JdbcTemplate jdbcTemplate;
