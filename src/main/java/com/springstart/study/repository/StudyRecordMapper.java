@@ -9,4 +9,6 @@ public interface StudyRecordMapper {
     StudyRecord findById(Long id);
 
     List<StudyRecord> findAll();
+
+    List<StudyRecord> findByMinStudyMinutes(int minStudyMinutes);
 }
