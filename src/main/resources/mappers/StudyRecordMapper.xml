@@ -29,4 +29,12 @@
         WHERE study_minutes >= #{minStudyMinutes}
         ORDER BY id ASC
     </select>
+
+    <select id="findByTitleAndMinStudyMinutes" resultMap="studyRecordResultMap">
+        SELECT id, title, content, study_minutes
+        FROM study_records
+        WHERE title = #{title}
+          AND study_minutes >= #{minStudyMinutes}
+        ORDER BY id ASC
+    </select>
 </mapper>
