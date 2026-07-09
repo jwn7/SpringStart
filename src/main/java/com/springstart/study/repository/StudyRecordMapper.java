@@ -19,4 +19,10 @@ public interface StudyRecordMapper {
     );
 
     List<StudyRecord> search(StudyRecordSearchCondition searchCondition);
+
+    int insert(StudyRecord record);
+
+    int update(StudyRecord record);
+
+    void deleteById(Long id);
 }

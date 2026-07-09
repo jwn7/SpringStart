@@ -349,4 +349,126 @@ public class MyBatisConfigTest {
         ac.close();
     }
 
+    @Test
+    void insertTest() {
+        AnnotationConfigApplicationContext ac = new AnnotationConfigApplicationContext();
+        ac.getEnvironment().setActiveProfiles("jdbc");
+        ac.register(AppConfig.class);
+        ac.refresh();
+
+        StudyRecordMapper studyRecordMapper = ac.getBean(StudyRecordMapper.class);
+
+        JdbcTemplate jdbcTemplate = ac.getBean(JdbcTemplate.class);
+        jdbcTemplate.execute("DROP TABLE IF EXISTS study_records");
+        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS study_records (" +
+                "id BIGINT PRIMARY KEY," +
+                "title varchar(255) NOT NULL," +
+                "content varchar(255)," +
+                "study_minutes INTEGER NOT NULL," +
+                "completed BOOLEAN NOT NULL DEFAULT FALSE )");
+
+        StudyRecord record = new StudyRecord(1L, "t", "t", 30);
+
+        int inserted = studyRecordMapper.insert(record);
+
+        StudyRecord saved = studyRecordMapper.findById(record.getId());
+
+        Assertions.assertEquals(1, inserted);
+        Assertions.assertEquals(1L, saved.getId());
+        Assertions.assertEquals("t", saved.getTitle());
+        Assertions.assertEquals("t", saved.getContent());
+        Assertions.assertEquals(30, saved.getStudyMinutes());
+
+        ac.close();
+    }
+
+    @Test
+    void updateTest() {
+        AnnotationConfigApplicationContext ac = new AnnotationConfigApplicationContext();
+        ac.getEnvironment().setActiveProfiles("jdbc");
+        ac.register(AppConfig.class);
+        ac.refresh();
+
+        StudyRecordMapper studyRecordMapper = ac.getBean(StudyRecordMapper.class);
+
+        JdbcTemplate jdbcTemplate = ac.getBean(JdbcTemplate.class);
+        jdbcTemplate.execute("DROP TABLE IF EXISTS study_records");
+        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS study_records (" +
+                "id BIGINT PRIMARY KEY," +
+                "title varchar(255) NOT NULL," +
+                "content varchar(255)," +
+                "study_minutes INTEGER NOT NULL," +
+                "completed BOOLEAN NOT NULL DEFAULT FALSE )");
+
+        StudyRecord record = new StudyRecord(1L, "t", "t", 30);
+        studyRecordMapper.insert(record);
+
+        record.update("test", "test", 100);
+        int affectedRows = studyRecordMapper.update(record);
+        StudyRecord updatedRecord = studyRecordMapper.findById(record.getId());
+
+        Assertions.assertEquals(1, affectedRows);
+        Assertions.assertEquals("test", updatedRecord.getTitle());
+        Assertions.assertEquals("test", updatedRecord.getContent());
+        Assertions.assertEquals(100, updatedRecord.getStudyMinutes());
+
+        ac.close();
+    }
+
+    @Test
+    void deleteTest() {
+        AnnotationConfigApplicationContext ac = new AnnotationConfigApplicationContext();
+        ac.getEnvironment().setActiveProfiles("jdbc");
+        ac.register(AppConfig.class);
+        ac.refresh();
+
+        StudyRecordMapper studyRecordMapper = ac.getBean(StudyRecordMapper.class);
+
+        JdbcTemplate jdbcTemplate = ac.getBean(JdbcTemplate.class);
+        jdbcTemplate.execute("DROP TABLE IF EXISTS study_records");
+        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS study_records (" +
+                "id BIGINT PRIMARY KEY," +
+                "title varchar(255) NOT NULL," +
+                "content varchar(255)," +
+                "study_minutes INTEGER NOT NULL," +
+                "completed BOOLEAN NOT NULL DEFAULT FALSE )");
+
+        StudyRecord record = new StudyRecord(1L, "t", "t", 30);
+        studyRecordMapper.insert(record);
+
+        studyRecordMapper.deleteById(record.getId());
+        Assertions.assertNull(studyRecordMapper.findById(record.getId()));
+
+        ac.close();
+    }
+
+    @Test
+    void roundTripTest()
+    {
+        AnnotationConfigApplicationContext ac = new AnnotationConfigApplicationContext();
+        ac.getEnvironment().setActiveProfiles("jdbc");
+        ac.register(AppConfig.class);
+        ac.refresh();
+
+        StudyRecordMapper studyRecordMapper = ac.getBean(StudyRecordMapper.class);
+
+        JdbcTemplate jdbcTemplate = ac.getBean(JdbcTemplate.class);
+        jdbcTemplate.execute("DROP TABLE IF EXISTS study_records");
+        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS study_records (" +
+                "id BIGINT PRIMARY KEY," +
+                "title varchar(255) NOT NULL," +
+                "content varchar(255)," +
+                "study_minutes INTEGER NOT NULL," +
+                "completed BOOLEAN NOT NULL DEFAULT FALSE )");
+
+        StudyRecord record = new StudyRecord(1L, "t", "t", 30);
+        record.complete();
+        studyRecordMapper.insert(record);
+        StudyRecord updatedRecord = studyRecordMapper.findById(record.getId());
+
+        Assertions.assertTrue(updatedRecord.isCompleted());
+
+        ac.close();
+
+    }
 }

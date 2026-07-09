@@ -10,28 +10,29 @@
         <result column="title" property="title"/>
         <result column="content" property="content"/>
         <result column="study_minutes" property="studyMinutes"/>
+        <result column="completed" property="completed"/>
     </resultMap>
     <select id="findById" resultMap="studyRecordResultMap">
-        SELECT id, title, content, study_minutes
+        SELECT id, title, content, study_minutes, completed
         FROM study_records
         WHERE id = #{id}
     </select>
 
     <select id="findAll" resultMap="studyRecordResultMap">
-        SELECT id, title, content, study_minutes
+        SELECT id, title, content, study_minutes, completed
         FROM study_records
         ORDER BY id ASC
     </select>
 
     <select id="findByMinStudyMinutes" parameterType="int" resultMap="studyRecordResultMap">
-        SELECT id, title, content, study_minutes
+        SELECT id, title, content, study_minutes, completed
         FROM study_records
         WHERE study_minutes >= #{minStudyMinutes}
         ORDER BY id ASC
     </select>
 
     <select id="findByTitleAndMinStudyMinutes" resultMap="studyRecordResultMap">
-        SELECT id, title, content, study_minutes
+        SELECT id, title, content, study_minutes, completed
         FROM study_records
         WHERE title = #{title}
           AND study_minutes >= #{minStudyMinutes}
@@ -40,7 +41,7 @@
 
     <select id="search" parameterType="com.springstart.study.repository.StudyRecordSearchCondition"
             resultMap="studyRecordResultMap">
-        SELECT id, title, content, study_minutes
+        SELECT id, title, content, study_minutes, completed
         FROM study_records
         <where>
             <if test="title != null and title != ''">
@@ -52,4 +53,26 @@
         </where>
         ORDER BY id ASC
     </select>
+
+    <insert id="insert" parameterType="com.springstart.study.domain.StudyRecord">
+        INSERT INTO study_records(
+            id, title, content, study_minutes, completed
+        )
+        VALUES (
+            #{id}, #{title}, #{content}, #{studyMinutes}, #{completed}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.springstart.study.domain.StudyRecord">
+        UPDATE study_records
+        SET title = #{title},
+            content = #{content},
+            study_minutes = #{studyMinutes}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById" parameterType="long">
+        DELETE FROM study_records
+        WHERE id = #{id}
+    </delete>
 </mapper>
