@@ -37,4 +37,19 @@
           AND study_minutes >= #{minStudyMinutes}
         ORDER BY id ASC
     </select>
+
+    <select id="search" parameterType="com.springstart.study.repository.StudyRecordSearchCondition"
+            resultMap="studyRecordResultMap">
+        SELECT id, title, content, study_minutes
+        FROM study_records
+        <where>
+            <if test="title != null and title != ''">
+                title = #{title}
+            </if>
+            <if test="minStudyMinutes != null">
+                AND study_minutes >= #{minStudyMinutes}
+            </if>
+        </where>
+        ORDER BY id ASC
+    </select>
 </mapper>

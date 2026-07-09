@@ -3,6 +3,7 @@ package com.springstart.study;
 import com.springstart.study.config.AppConfig;
 import com.springstart.study.domain.StudyRecord;
 import com.springstart.study.repository.StudyRecordMapper;
+import com.springstart.study.repository.StudyRecordSearchCondition;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -198,4 +199,154 @@ public class MyBatisConfigTest {
         Assertions.assertEquals(40, result.get(0).getStudyMinutes());
         ac.close();
     }
+
+    @Test
+    void searchTest() {
+        AnnotationConfigApplicationContext ac = new AnnotationConfigApplicationContext();
+        ac.getEnvironment().setActiveProfiles("jdbc");
+        ac.register(AppConfig.class);
+        ac.refresh();
+
+        StudyRecordMapper studyRecordMapper = ac.getBean(StudyRecordMapper.class);
+
+        JdbcTemplate jdbcTemplate = ac.getBean(JdbcTemplate.class);
+        jdbcTemplate.execute("DROP TABLE IF EXISTS study_records");
+        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS study_records (" +
+                "id BIGINT PRIMARY KEY," +
+                "title varchar(255) NOT NULL," +
+                "content varchar(255)," +
+                "study_minutes INTEGER NOT NULL," +
+                "completed BOOLEAN NOT NULL DEFAULT FALSE )");
+
+        jdbcTemplate.update("INSERT INTO study_records (id, title, content, study_minutes, completed) VALUES (?,?,?,?,?)",
+                1L,
+                "java",
+                "test",
+                10,
+                false);
+
+        jdbcTemplate.update("INSERT INTO study_records (id, title, content, study_minutes, completed) VALUES (?,?,?,?,?)",
+                2L,
+                "java",
+                "t",
+                40,
+                false);
+        jdbcTemplate.update("INSERT INTO study_records (id, title, content, study_minutes, completed) VALUES (?,?,?,?,?)",
+                3L,
+                "spring",
+                "t",
+                50,
+                false);
+
+        StudyRecordSearchCondition condition = new StudyRecordSearchCondition("java", null);
+        List<StudyRecord> result = studyRecordMapper.search(condition);
+
+        Assertions.assertEquals(2, result.size());
+        Assertions.assertEquals(1L, result.get(0).getId());
+        Assertions.assertEquals("java", result.get(0).getTitle());
+        Assertions.assertEquals(10, result.get(0).getStudyMinutes());
+        Assertions.assertEquals(2L, result.get(1).getId());
+
+        ac.close();
+    }
+
+    @Test
+    void searchWithMinStudyMinutesOnlyTest() {
+        AnnotationConfigApplicationContext ac = new AnnotationConfigApplicationContext();
+        ac.getEnvironment().setActiveProfiles("jdbc");
+        ac.register(AppConfig.class);
+        ac.refresh();
+
+        StudyRecordMapper studyRecordMapper = ac.getBean(StudyRecordMapper.class);
+
+        JdbcTemplate jdbcTemplate = ac.getBean(JdbcTemplate.class);
+        jdbcTemplate.execute("DROP TABLE IF EXISTS study_records");
+        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS study_records (" +
+                "id BIGINT PRIMARY KEY," +
+                "title varchar(255) NOT NULL," +
+                "content varchar(255)," +
+                "study_minutes INTEGER NOT NULL," +
+                "completed BOOLEAN NOT NULL DEFAULT FALSE )");
+
+        jdbcTemplate.update("INSERT INTO study_records (id, title, content, study_minutes, completed) VALUES (?,?,?,?,?)",
+                1L,
+                "java",
+                "test",
+                10,
+                false);
+
+        jdbcTemplate.update("INSERT INTO study_records (id, title, content, study_minutes, completed) VALUES (?,?,?,?,?)",
+                2L,
+                "java",
+                "t",
+                40,
+                false);
+        jdbcTemplate.update("INSERT INTO study_records (id, title, content, study_minutes, completed) VALUES (?,?,?,?,?)",
+                3L,
+                "spring",
+                "t",
+                50,
+                false);
+
+        StudyRecordSearchCondition condition = new StudyRecordSearchCondition(null, 30);
+        List<StudyRecord> result = studyRecordMapper.search(condition);
+
+        Assertions.assertEquals(2, result.size());
+        Assertions.assertEquals(2L, result.get(0).getId());
+        Assertions.assertEquals("java", result.get(0).getTitle());
+        Assertions.assertEquals(40, result.get(0).getStudyMinutes());
+        Assertions.assertEquals(3L, result.get(1).getId());
+
+        ac.close();
+    }
+
+    @Test
+    void searchWithNoneParamTest()
+    {
+        AnnotationConfigApplicationContext ac = new AnnotationConfigApplicationContext();
+        ac.getEnvironment().setActiveProfiles("jdbc");
+        ac.register(AppConfig.class);
+        ac.refresh();
+
+        StudyRecordMapper studyRecordMapper = ac.getBean(StudyRecordMapper.class);
+
+        JdbcTemplate jdbcTemplate = ac.getBean(JdbcTemplate.class);
+        jdbcTemplate.execute("DROP TABLE IF EXISTS study_records");
+        jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS study_records (" +
+                "id BIGINT PRIMARY KEY," +
+                "title varchar(255) NOT NULL," +
+                "content varchar(255)," +
+                "study_minutes INTEGER NOT NULL," +
+                "completed BOOLEAN NOT NULL DEFAULT FALSE )");
+
+        jdbcTemplate.update("INSERT INTO study_records (id, title, content, study_minutes, completed) VALUES (?,?,?,?,?)",
+                1L,
+                "java",
+                "test",
+                10,
+                false);
+
+        jdbcTemplate.update("INSERT INTO study_records (id, title, content, study_minutes, completed) VALUES (?,?,?,?,?)",
+                2L,
+                "java",
+                "t",
+                40,
+                false);
+        jdbcTemplate.update("INSERT INTO study_records (id, title, content, study_minutes, completed) VALUES (?,?,?,?,?)",
+                3L,
+                "spring",
+                "t",
+                50,
+                false);
+
+        StudyRecordSearchCondition condition = new StudyRecordSearchCondition(null, null);
+        List<StudyRecord> result = studyRecordMapper.search(condition);
+
+        Assertions.assertEquals(3, result.size());
+        Assertions.assertEquals(1L, result.get(0).getId());
+        Assertions.assertEquals(2L,result.get(1).getId());
+        Assertions.assertEquals(3L,result.get(2).getId());
+        ac.close();
+    }
+
 }

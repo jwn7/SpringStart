@@ -17,4 +17,6 @@ public interface StudyRecordMapper {
             @Param("title") String title,
             @Param("minStudyMinutes") int minStudyMinutes
     );
+
+    List<StudyRecord> search(StudyRecordSearchCondition searchCondition);
 }
