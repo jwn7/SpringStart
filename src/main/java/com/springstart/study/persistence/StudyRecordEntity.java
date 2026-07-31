@@ -31,6 +31,10 @@ public class StudyRecordEntity {
         this.completed = false;
     }
 
+    public void changeStudyMinutes(int studyMinutes) {
+        this.studyMinutes = studyMinutes;
+    }
+
     public String getTitle() {
         return title;
     }
