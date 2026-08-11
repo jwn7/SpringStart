@@ -4,6 +4,7 @@ import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
+import org.springframework.data.domain.*;
 
 import java.util.List;
 
@@ -202,9 +203,70 @@ class StudyRecordJpaRepositoryTest {
         List<StudyRecordSummary> list = studyRecordJpaRepository.findSummariesByTitle("title1");
         assertEquals(2, list.size());
 
-        assertEquals(90, list.get(0).getStudyMinutes());
-        assertEquals(60, list.get(1).getStudyMinutes());
-        assertEquals("title1", list.get(0).getTitle());
+        assertEquals(90, list.get(0).studyMinutes());
+        assertEquals(60, list.get(1).studyMinutes());
+        assertEquals("title1", list.get(0).title());
 
+    }
+
+    @Test
+    void findAllWithPageableTest() {
+        StudyRecordEntity studyRecordEntity = new StudyRecordEntity("title", "t", 30);
+        studyRecordJpaRepository.save(studyRecordEntity);
+        StudyRecordEntity studyRecordEntity1 = new StudyRecordEntity("title1", "t", 60);
+        studyRecordJpaRepository.save(studyRecordEntity1);
+        StudyRecordEntity studyRecordEntity2 = new StudyRecordEntity("title2", "t", 90);
+        studyRecordJpaRepository.save(studyRecordEntity2);
+
+        entityManager.flush();
+        entityManager.clear();
+
+        Pageable pageable = PageRequest.of(
+                0,
+                2,
+                Sort.by("studyMinutes").descending()
+        );
+
+        Page<StudyRecordEntity> page = studyRecordJpaRepository.findAll(pageable);
+
+        assertEquals(2, page.getContent().size());
+        assertEquals(3, page.getTotalElements());
+        assertEquals(2, page.getTotalPages());
+
+        assertEquals(90, page.getContent().get(0).getStudyMinutes());
+        assertEquals(60, page.getContent().get(1).getStudyMinutes());
+
+        assertEquals(0, page.getNumber());
+        assertTrue(page.hasNext());
+
+
+    }
+
+    @Test
+    void findWithSliceTest() {
+        StudyRecordEntity studyRecordEntity = new StudyRecordEntity("title", "t", 30);
+        studyRecordJpaRepository.save(studyRecordEntity);
+        StudyRecordEntity studyRecordEntity1 = new StudyRecordEntity("title1", "t", 60);
+        studyRecordJpaRepository.save(studyRecordEntity1);
+        StudyRecordEntity studyRecordEntity2 = new StudyRecordEntity("title2", "t", 90);
+        studyRecordJpaRepository.save(studyRecordEntity2);
+
+        entityManager.flush();
+        entityManager.clear();
+
+
+        Pageable pageable = PageRequest.of(
+                0,
+                2,
+                Sort.by("studyMinutes").descending()
+        );
+
+        Slice<StudyRecordEntity> slice = studyRecordJpaRepository.findByCompleted(false, pageable);
+
+        assertEquals(2, slice.getContent().size());
+        assertEquals(90, slice.getContent().get(0).getStudyMinutes());
+        assertEquals(60, slice.getContent().get(1).getStudyMinutes());
+        assertEquals(0, slice.getNumber());
+        assertTrue(slice.hasNext());
     }
 }

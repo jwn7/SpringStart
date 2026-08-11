@@ -1,5 +1,7 @@
 package com.springstart.study.persistence;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -40,4 +42,9 @@ public interface StudyRecordJpaRepository extends JpaRepository<StudyRecordEntit
 
 """)
     List<StudyRecordSummary> findSummariesByTitle(@Param("title")String title);
+
+    Slice<StudyRecordEntity> findByCompleted(
+            boolean completed,
+            Pageable pageable
+    );
 }
