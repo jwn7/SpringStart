@@ -2,6 +2,7 @@ package com.springstart.study.service;
 
 import com.springstart.study.exception.StudyRecordErrorCode;
 import com.springstart.study.exception.StudyRecordNotFoundException;
+import com.springstart.study.persistence.StudyRecordCursorResponse;
 import com.springstart.study.persistence.StudyRecordEntity;
 import com.springstart.study.persistence.StudyRecordJpaRepository;
 import jakarta.persistence.EntityManager;
@@ -47,6 +48,47 @@ class StudyRecordJpaServiceTest {
         Assertions.assertEquals(StudyRecordErrorCode.STUDY_RECORD_NOT_FOUND, studyRecordNotFoundException.getErrorCode());
 
 
+    }
+
+    @Test
+    void findNextByCursorReturnsFirstCursorResponse() {
+        StudyRecordEntity sixtyMinutesRecord = initEntity();
+
+        StudyRecordCursorResponse response = studyRecordJpaService.findNextByCursor(null, 2);
+
+        Assertions.assertEquals(2, response.contents().size());
+        Assertions.assertEquals(90, response.contents().get(0).studyMinutes());
+        Assertions.assertEquals(60, response.contents().get(1).studyMinutes());
+        Assertions.assertTrue(response.hasNext());
+        Assertions.assertEquals(sixtyMinutesRecord.getId(), response.nextCursor());
+
+    }
+
+    @Test
+    void findNextByCursorReturnsLastCursorResponse() {
+        initEntity();
+
+        StudyRecordCursorResponse firstResponse = studyRecordJpaService.findNextByCursor(null, 2);
+        StudyRecordCursorResponse secondResponse = studyRecordJpaService.findNextByCursor(firstResponse.nextCursor(), 2);
+
+        Assertions.assertEquals(1, secondResponse.contents().size());
+        Assertions.assertEquals(30, secondResponse.contents().get(0).studyMinutes());
+        Assertions.assertFalse(secondResponse.hasNext());
+        Assertions.assertNull(secondResponse.nextCursor());
+    }
+
+    private StudyRecordEntity initEntity() {
+        StudyRecordEntity studyRecordEntity = new StudyRecordEntity("title", "t", 30);
+        studyRecordJpaRepository.save(studyRecordEntity);
+        StudyRecordEntity studyRecordEntity1 = new StudyRecordEntity("title1", "t", 60);
+        studyRecordJpaRepository.save(studyRecordEntity1);
+        StudyRecordEntity studyRecordEntity2 = new StudyRecordEntity("title2", "t", 90);
+        studyRecordJpaRepository.save(studyRecordEntity2);
+
+        em.flush();
+        em.clear();
+
+        return studyRecordEntity1;
     }
 
 }
