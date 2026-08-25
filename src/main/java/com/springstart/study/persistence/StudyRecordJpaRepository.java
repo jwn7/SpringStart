@@ -47,4 +47,16 @@ public interface StudyRecordJpaRepository extends JpaRepository<StudyRecordEntit
             boolean completed,
             Pageable pageable
     );
+
+
+    @Query("""
+                    SELECT r
+                    from StudyRecordEntity r
+                    where (:cursorId is NULL OR r.id < :cursorId)
+                    order by r.id desc
+            """)
+    List<StudyRecordEntity> findNextByCursor(
+            @Param("cursorId") Long cursorId,
+            Pageable pageable
+    );
 }

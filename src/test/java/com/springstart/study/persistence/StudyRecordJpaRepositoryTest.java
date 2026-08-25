@@ -211,15 +211,7 @@ class StudyRecordJpaRepositoryTest {
 
     @Test
     void findAllWithPageableTest() {
-        StudyRecordEntity studyRecordEntity = new StudyRecordEntity("title", "t", 30);
-        studyRecordJpaRepository.save(studyRecordEntity);
-        StudyRecordEntity studyRecordEntity1 = new StudyRecordEntity("title1", "t", 60);
-        studyRecordJpaRepository.save(studyRecordEntity1);
-        StudyRecordEntity studyRecordEntity2 = new StudyRecordEntity("title2", "t", 90);
-        studyRecordJpaRepository.save(studyRecordEntity2);
-
-        entityManager.flush();
-        entityManager.clear();
+        initEntity();
 
         Pageable pageable = PageRequest.of(
                 0,
@@ -244,15 +236,7 @@ class StudyRecordJpaRepositoryTest {
 
     @Test
     void findWithSliceTest() {
-        StudyRecordEntity studyRecordEntity = new StudyRecordEntity("title", "t", 30);
-        studyRecordJpaRepository.save(studyRecordEntity);
-        StudyRecordEntity studyRecordEntity1 = new StudyRecordEntity("title1", "t", 60);
-        studyRecordJpaRepository.save(studyRecordEntity1);
-        StudyRecordEntity studyRecordEntity2 = new StudyRecordEntity("title2", "t", 90);
-        studyRecordJpaRepository.save(studyRecordEntity2);
-
-        entityManager.flush();
-        entityManager.clear();
+        initEntity();
 
 
         Pageable pageable = PageRequest.of(
@@ -268,5 +252,71 @@ class StudyRecordJpaRepositoryTest {
         assertEquals(60, slice.getContent().get(1).getStudyMinutes());
         assertEquals(0, slice.getNumber());
         assertTrue(slice.hasNext());
+    }
+
+    private void initEntity() {
+        StudyRecordEntity studyRecordEntity = new StudyRecordEntity("title", "t", 30);
+        studyRecordJpaRepository.save(studyRecordEntity);
+        StudyRecordEntity studyRecordEntity1 = new StudyRecordEntity("title1", "t", 60);
+        studyRecordJpaRepository.save(studyRecordEntity1);
+        StudyRecordEntity studyRecordEntity2 = new StudyRecordEntity("title2", "t", 90);
+        studyRecordJpaRepository.save(studyRecordEntity2);
+
+        entityManager.flush();
+        entityManager.clear();
+    }
+
+    @Test
+    void findWithCursorTest() {
+        initEntity();
+
+        Pageable pageable = PageRequest.of(0, 2);
+        List<StudyRecordEntity> list = studyRecordJpaRepository.findNextByCursor(null, pageable);
+
+        Long cursorId = list.get(1).getId();
+
+        List<StudyRecordEntity> nextList = studyRecordJpaRepository.findNextByCursor(cursorId, pageable);
+
+        assertEquals(2, list.size());
+        assertEquals(90, list.get(0).getStudyMinutes());
+        assertEquals(60, list.get(1).getStudyMinutes());
+
+        assertEquals(30, nextList.get(0).getStudyMinutes());
+        assertEquals(1, nextList.size());
+        assertTrue(nextList.get(0).getId() < cursorId);
+    }
+
+    @Test
+    void findNextByCursorTest() {
+        initEntity();
+        int size = 2;
+        Pageable pageable = PageRequest.of(0, size + 1);
+
+        List<StudyRecordEntity> fetched = studyRecordJpaRepository.findNextByCursor(null, pageable);
+        boolean hasNext = fetched.size() > size;
+        assertEquals(3, fetched.size());
+
+        assertTrue(hasNext);
+
+        List<StudyRecordEntity> content = fetched.subList(0, size);
+        List<StudyRecordJpaResponse> list = content.stream()
+                .map(StudyRecordJpaResponse::new)
+                .toList();
+        Long nextCursor = content.get(1).getId();
+        StudyRecordCursorResponse cursorResponse = new StudyRecordCursorResponse(list, nextCursor, hasNext);
+
+        assertEquals(2, cursorResponse.contents().size());
+        assertEquals(90, cursorResponse.contents().get(0).studyMinutes());
+        assertEquals(nextCursor, cursorResponse.nextCursor());
+        assertTrue(cursorResponse.hasNext());
+
+        List<StudyRecordEntity> nextList = studyRecordJpaRepository.findNextByCursor(nextCursor, pageable);
+
+        assertEquals(2, content.size());
+        assertEquals(1, nextList.size());
+
+        assertTrue(nextList.get(0).getId() < nextCursor);
+
+
     }
 }
