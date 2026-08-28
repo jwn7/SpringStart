@@ -11,7 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -71,6 +74,31 @@ class StudyRecordJpaControllerTest {
                 .andExpect(jsonPath("$.status").value(400))
                 .andExpect(jsonPath("$.errorCode").value("INVALID_REQUEST_PARAMETER"))
                 .andExpect(jsonPath("$.message").value("Invalid request parameter"));
+
+    }
+
+    @Test
+    void nextCursorRequestReturnsLastPage() throws Exception {
+        initEntity();
+
+        MvcResult firstResult = mockMvc.perform(get("/jpa-records").param("size", "2"))
+                .andExpect(status().isOk())
+                .andReturn();
+        String json = firstResult.getResponse().getContentAsString();
+
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode root = mapper.readTree(json);
+        long nextCursor = root.get("nextCursor").asLong();
+
+        mockMvc.perform(get("/jpa-records")
+                .param("cursorId", String.valueOf(nextCursor))
+                .param("size", "2"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.contents.length()").value(1))
+                .andExpect(jsonPath("$.contents[0].studyMinutes").value(30))
+                .andExpect(jsonPath("$.hasNext").value(false))
+                .andExpect(jsonPath("$.nextCursor").doesNotExist());
 
     }
 
